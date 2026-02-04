@@ -28,23 +28,33 @@
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 
-        <div id="strength"></div>
+        <div id="strength" style="margin-top:5px; font-weight:bold;"></div>
 
         <script>
         document.getElementById("password").addEventListener("input", function () {
-            let strength = "Weak";
+            let strengthText = "Weak";
             let value = this.value;
+            let strengthDiv = document.getElementById("strength");
 
-            if (value.length >= 8 &&
+            if (
+                value.length >= 8 &&
                 /[A-Z]/.test(value) &&
                 /[0-9]/.test(value) &&
-                /[^A-Za-z0-9]/.test(value)) {
-                strength = "Strong";
+                /[^A-Za-z0-9]/.test(value)
+            ) {
+                strengthText = "Strong";
+                strengthDiv.style.backgroundColor = "green";
             } else if (value.length >= 6) {
-                strength = "Medium";
+                strengthText = "Medium";
+                strengthDiv.style.backgroundColor = "orange";
+            } else {
+                strengthDiv.style.backgroundColor = "red";
             }
 
-            document.getElementById("strength").innerText = "Strength: " + strength;
+            strengthDiv.style.color = "white";
+            strengthDiv.style.padding = "5px";
+            strengthDiv.style.borderRadius = "4px";
+            strengthDiv.innerText = "Strength: " + strengthText;
         });
         </script>
 
