@@ -1,26 +1,22 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\RoleMiddleware;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
 Route::middleware(['auth'])->group(function () {
 
     Route::get('/student/dashboard', function () {
         return view('student.dashboard');
-    })->middleware('role:student');
+    })->middleware(RoleMiddleware::class . ':student');
 
     Route::get('/admin/dashboard', function () {
         return view('admin.dashboard');
-    })->middleware('role:admin');
+    })->middleware(RoleMiddleware::class . ':admin');
 
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
