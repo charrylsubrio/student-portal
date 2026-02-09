@@ -1,21 +1,25 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Student Dashboard</title>
-</head>
-<body>
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+            Student Dashboard
+        </h2>
+    </x-slot>
 
-    <h1>Student Dashboard</h1>
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-    <p>Welcome, {{ auth()->user()->name }}</p>
+            <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
 
-    <!-- ✅ Logout Button -->
-    <form method="POST" action="{{ route('logout') }}">
-        @csrf
-        <button type="submit" style="color:red; margin-top:10px;">
-            Logout
-        </button>
-    </form>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                    Welcome, {{ auth()->user()->name }}
+                </h3>
 
-</body>
-</html>
+                <p class="mt-2 text-gray-600 dark:text-gray-300">
+                    You are logged in as a <strong>Student</strong>.
+                </p>
+
+            </div>
+
+        </div>
+    </div>
+</x-app-layout>
