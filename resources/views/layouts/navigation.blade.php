@@ -18,6 +18,8 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+
+                    <!-- Dashboard -->
                     <x-nav-link
                         :href="Auth::user()->role === 'admin'
                             ? url('/admin/dashboard')
@@ -26,6 +28,17 @@
                     >
                         {{ __('Dashboard') }}
                     </x-nav-link>
+
+                    <!-- 🔹 ADMIN ONLY: All Users -->
+                    @if(Auth::user()->role === 'admin')
+                        <x-nav-link
+                            :href="url('/admin/users')"
+                            :active="request()->is('admin/users*')"
+                        >
+                            {{ __('All Users') }}
+                        </x-nav-link>
+                    @endif
+
                 </div>
             </div>
 
@@ -45,7 +58,7 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        <!-- Authentication -->
+                        <!-- Logout -->
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
 
@@ -74,7 +87,10 @@
 
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
+
         <div class="pt-2 pb-3 space-y-1">
+
+            <!-- Dashboard -->
             <x-responsive-nav-link
                 :href="Auth::user()->role === 'admin'
                     ? url('/admin/dashboard')
@@ -83,9 +99,19 @@
             >
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+
+            <!-- 🔹 ADMIN ONLY: All Users -->
+            @if(Auth::user()->role === 'admin')
+                <x-responsive-nav-link
+                    :href="url('/admin/users')"
+                    :active="request()->is('admin/users*')"
+                >
+                    {{ __('All Users') }}
+                </x-responsive-nav-link>
+            @endif
         </div>
 
-        <!-- Responsive Settings Options -->
+        <!-- Responsive Settings -->
         <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
             <div class="px-4">
                 <div class="font-medium text-base text-gray-800 dark:text-gray-200">
