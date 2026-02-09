@@ -41,7 +41,7 @@ class UserController extends Controller
         User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password), // 🔒 hashed password
+            'password' => Hash::make($request->password), // 🔒 secure hashing
             'role' => $request->role,
         ]);
 
@@ -79,10 +79,16 @@ class UserController extends Controller
     }
 
     // ===============================
-    // DELETE USER
+    // DELETE USER (SAFE VERSION)
     // ===============================
     public function destroy(User $user)
     {
+        // ❌ Prevent admin from deleting their own account
+        if (auth()->id() === $user->id) {
+            return redirect()->route('admin.users')
+                ->with('error', 'You cannot delete your own account.');
+        }
+
         $user->delete();
 
         return redirect()->route('admin.users')
