@@ -9,20 +9,26 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    // ===============================
     // LIST USERS
+    // ===============================
     public function index()
     {
         $users = User::all();
         return view('admin.users.index', compact('users'));
     }
 
+    // ===============================
     // SHOW CREATE FORM
+    // ===============================
     public function create()
     {
         return view('admin.users.create');
     }
 
+    // ===============================
     // STORE NEW USER
+    // ===============================
     public function store(Request $request)
     {
         $request->validate([
@@ -35,7 +41,7 @@ class UserController extends Controller
         User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'password' => Hash::make($request->password), // 🔒 hashed password
             'role' => $request->role,
         ]);
 
@@ -43,13 +49,17 @@ class UserController extends Controller
             ->with('success', 'User created successfully.');
     }
 
+    // ===============================
     // SHOW EDIT FORM
+    // ===============================
     public function edit(User $user)
     {
         return view('admin.users.edit', compact('user'));
     }
 
+    // ===============================
     // UPDATE USER
+    // ===============================
     public function update(Request $request, User $user)
     {
         $request->validate([
@@ -66,5 +76,16 @@ class UserController extends Controller
 
         return redirect()->route('admin.users')
             ->with('success', 'User updated successfully.');
+    }
+
+    // ===============================
+    // DELETE USER
+    // ===============================
+    public function destroy(User $user)
+    {
+        $user->delete();
+
+        return redirect()->route('admin.users')
+            ->with('success', 'User deleted successfully.');
     }
 }
