@@ -32,6 +32,7 @@
             </label>
         </div>
 
+        <!-- Login Button + Forgot Password -->
         <div class="flex items-center justify-end mt-4">
             @if (Route::has('password.request'))
                 <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('password.request') }}">
@@ -43,5 +44,19 @@
                 {{ __('Log in') }}
             </x-primary-button>
         </div>
+
+        <!-- ✅ NEW NAVIGATION LINKS ADDED HERE -->
+        <div class="mt-6 text-center space-x-4">
+            <a href="{{ url('/') }}" 
+               class="text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600">
+                ← Back to Home Page
+            </a>
+
+            <a href="{{ route('register') }}" 
+               class="text-sm text-indigo-600 hover:underline">
+                Register Page
+            </a>
+        </div>
+
     </form>
 </x-guest-layout>
