@@ -27,21 +27,31 @@ class UserController extends Controller
     }
 
     // ===============================
-    // STORE NEW USER
+    // STORE NEW USER (STRONG PASSWORD)
     // ===============================
     public function store(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6',
+
+            // 🔐 SAME RULES AS REGISTER PAGE
+            'password' => [
+                'required',
+                'confirmed',
+                'min:8',
+                'regex:/[A-Z]/',        // uppercase
+                'regex:/[0-9]/',        // number
+                'regex:/[^A-Za-z0-9]/'  // special character
+            ],
+
             'role' => 'required|in:admin,student',
         ]);
 
         User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password), // 🔒 secure hashing
+            'password' => Hash::make($request->password),
             'role' => $request->role,
         ]);
 
@@ -79,11 +89,11 @@ class UserController extends Controller
     }
 
     // ===============================
-    // DELETE USER (SAFE VERSION)
+    // DELETE USER (SECURE)
     // ===============================
     public function destroy(User $user)
     {
-        // ❌ Prevent admin from deleting their own account
+        // ❌ Prevent admin from deleting own account
         if (auth()->id() === $user->id) {
             return redirect()->route('admin.users')
                 ->with('error', 'You cannot delete your own account.');

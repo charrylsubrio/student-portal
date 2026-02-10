@@ -40,23 +40,26 @@
                                 <!-- ACTION BUTTONS -->
                                 <td class="p-2 border space-x-2">
 
-                                    <!-- EDIT -->
+                                    <!-- EDIT BUTTON -->
                                     <a href="{{ route('admin.users.edit', $user) }}"
                                        class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600">
                                         Edit
                                     </a>
 
-                                    <!-- DELETE -->
-                                    <form action="{{ route('admin.users.destroy', $user) }}"
-                                          method="POST"
-                                          style="display:inline;"
-                                          onsubmit="return confirm('Delete this user?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">
-                                            Delete
-                                        </button>
-                                    </form>
+                                    <!-- DELETE BUTTON (hidden if this is the logged-in admin) -->
+                                    @if(auth()->id() !== $user->id)
+                                        <form action="{{ route('admin.users.destroy', $user) }}"
+                                              method="POST"
+                                              class="inline"
+                                              onsubmit="return confirm('Delete this user?')">
+                                            @csrf
+                                            @method('DELETE')
+
+                                            <button class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    @endif
 
                                 </td>
                             </tr>
