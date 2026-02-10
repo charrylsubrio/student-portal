@@ -26,35 +26,167 @@
                             required autocomplete="new-password" />
 
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
+            
+            <!-- Strength Meter Text -->
+            <div id="strength" style="margin-top:5px; font-weight:bold;"></div>
+
+            <!-- Enhanced Animation Segments -->
+            <div class="strength-segments mt-1">
+                <div id="segment-1" class="strength-segment"></div>
+                <div id="segment-2" class="strength-segment"></div>
+                <div id="segment-3" class="strength-segment"></div>
+                <div id="segment-4" class="strength-segment"></div>
+            </div>
+
+            <div id="strength-details" class="mt-1"></div>
         </div>
 
-        <div id="strength" style="margin-top:5px; font-weight:bold;"></div>
+        <style>
+            .strength-segments {
+                display: flex;
+                gap: 4px;
+                margin-top: 8px;
+                height: 4px;
+            }
+
+            .strength-segment {
+                height: 100%;
+                flex: 1;
+                border-radius: 2px;
+                background-color: #e5e7eb;
+                transition: all 0.3s ease;
+            }
+
+            .strength-segment.active {
+                transform: scaleY(1.2);
+            }
+
+            .strength-segment.weak {
+                background-color: #ef4444;
+            }
+
+            .strength-segment.medium {
+                background-color: #f59e0b;
+            }
+
+            .strength-segment.strong {
+                background-color: #10b981;
+            }
+
+            #strength-details {
+                font-size: 0.75rem;
+                color: #6b7280;
+                margin-top: 4px;
+                min-height: 16px;
+            }
+
+            /* Dark mode support */
+            .dark .strength-segment {
+                background-color: #4b5563;
+            }
+
+            .dark #strength-details {
+                color: #9ca3af;
+            }
+        </style>
 
         <script>
         document.getElementById("password").addEventListener("input", function () {
             let strengthText = "Weak";
+            let strengthColor = "red";
             let value = this.value;
             let strengthDiv = document.getElementById("strength");
-
-            if (
-                value.length >= 8 &&
-                /[A-Z]/.test(value) &&
-                /[0-9]/.test(value) &&
-                /[^A-Za-z0-9]/.test(value)
-            ) {
-                strengthText = "Strong";
-                strengthDiv.style.backgroundColor = "green";
-            } else if (value.length >= 6) {
-                strengthText = "Medium";
-                strengthDiv.style.backgroundColor = "orange";
-            } else {
-                strengthDiv.style.backgroundColor = "red";
+            let strengthDetails = document.getElementById("strength-details");
+            
+            // Reset all segments
+            for (let i = 1; i <= 4; i++) {
+                let segment = document.getElementById(`segment-${i}`);
+                segment.className = "strength-segment";
+                segment.style.backgroundColor = "";
             }
-
-            strengthDiv.style.color = "white";
-            strengthDiv.style.padding = "5px";
-            strengthDiv.style.borderRadius = "4px";
+            
+            // Clear if empty
+            if (value.length === 0) {
+                strengthText = "";
+                strengthDiv.style.display = "none";
+                strengthDetails.innerText = "";
+                return;
+            } else {
+                strengthDiv.style.display = "block";
+            }
+            
+            // Check requirements
+            let hasLength = value.length >= 8;
+            let hasUpper = /[A-Z]/.test(value);
+            let hasLower = /[a-z]/.test(value);
+            let hasNumber = /[0-9]/.test(value);
+            let hasSpecial = /[^A-Za-z0-9]/.test(value);
+            
+            let activeSegments = 0;
+            let detailsMessage = "";
+            
+            // Segment 1: Length
+            if (value.length >= 1) {
+                document.getElementById("segment-1").classList.add("active", "weak");
+                activeSegments = 1;
+            }
+            
+            // Segment 2: Length >= 6
+            if (value.length >= 6) {
+                document.getElementById("segment-2").classList.add("active", "weak");
+                activeSegments = 2;
+            }
+            
+            // Segment 3: Good length and some complexity
+            if (hasLength && (hasUpper || hasNumber || hasSpecial)) {
+                for (let i = 1; i <= 3; i++) {
+                    let segment = document.getElementById(`segment-${i}`);
+                    segment.className = "strength-segment active medium";
+                }
+                activeSegments = 3;
+                detailsMessage = "Good! Add more character types for stronger password";
+            }
+            
+            // Segment 4: Excellent - all requirements met
+            if (hasLength && hasUpper && hasNumber && hasSpecial && hasLower) {
+                for (let i = 1; i <= 4; i++) {
+                    let segment = document.getElementById(`segment-${i}`);
+                    segment.className = "strength-segment active strong";
+                }
+                activeSegments = 4;
+                detailsMessage = "✓ Excellent! Your password is very strong";
+            }
+            
+            // Set strength level and details
+            if (activeSegments === 4) {
+                strengthText = "Strong";
+                strengthColor = "#10b981";
+            } else if (activeSegments === 3) {
+                strengthText = "Medium";
+                strengthColor = "#f59e0b";
+                if (!detailsMessage) detailsMessage = "Add uppercase, numbers, or special characters";
+            } else if (activeSegments >= 1) {
+                strengthText = "Weak";
+                strengthColor = "#ef4444";
+                if (!detailsMessage) detailsMessage = "Use 8+ characters with uppercase, numbers, and special characters";
+            }
+            
+            // Update displays
+            strengthDiv.style.color = strengthColor;
             strengthDiv.innerText = "Strength: " + strengthText;
+            strengthDetails.innerText = detailsMessage;
+            
+            // Add specific requirement hints
+            let requirements = [];
+            if (!hasLength) requirements.push("at least 8 characters");
+            if (!hasUpper) requirements.push("one uppercase letter");
+            if (!hasLower) requirements.push("one lowercase letter");
+            if (!hasNumber) requirements.push("one number");
+            if (!hasSpecial) requirements.push("one special character");
+            
+            if (requirements.length > 0 && activeSegments < 4) {
+                strengthDetails.innerText = "Requirements: " + requirements.slice(0, 3).join(", ");
+            }
         });
         </script>
 
