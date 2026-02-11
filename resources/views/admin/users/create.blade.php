@@ -38,20 +38,28 @@
                     <div class="mt-4">
                         <label class="block font-medium">Password</label>
 
-                        <input id="password"
-                               type="password"
-                               name="password"
-                               class="block mt-1 w-full border rounded p-2"
-                               required>
+                        <div class="relative">
+                            <input id="password"
+                                   type="password"
+                                   name="password"
+                                   class="block mt-1 w-full border rounded p-2 pr-16"
+                                   required>
+
+                            <!-- SHOW/HIDE BUTTON -->
+                            <button type="button"
+                                    onclick="togglePassword('password', this)"
+                                    class="absolute right-2 top-2 text-xs text-gray-500">
+                                Show
+                            </button>
+                        </div>
 
                         @error('password')
                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                         @enderror
 
-                        <!-- Strength Meter Text -->
+                        <!-- Strength Meter -->
                         <div id="strength" class="mt-1 font-semibold"></div>
 
-                        <!-- Progress Segments -->
                         <div class="strength-segments mt-2">
                             <div id="segment-1" class="strength-segment"></div>
                             <div id="segment-2" class="strength-segment"></div>
@@ -65,10 +73,21 @@
                     <!-- Confirm Password -->
                     <div class="mt-4">
                         <label class="block font-medium">Confirm Password</label>
-                        <input type="password"
-                               name="password_confirmation"
-                               class="block mt-1 w-full border rounded p-2"
-                               required>
+
+                        <div class="relative">
+                            <input id="password_confirmation"
+                                   type="password"
+                                   name="password_confirmation"
+                                   class="block mt-1 w-full border rounded p-2 pr-16"
+                                   required>
+
+                            <!-- SHOW/HIDE BUTTON -->
+                            <button type="button"
+                                    onclick="togglePassword('password_confirmation', this)"
+                                    class="absolute right-2 top-2 text-xs text-gray-500">
+                                Show
+                            </button>
+                        </div>
 
                         @error('password_confirmation')
                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
@@ -128,15 +147,28 @@
 </style>
 
 
-{{-- ================= PASSWORD STRENGTH SCRIPT ================= --}}
+{{-- ================= SCRIPTS ================= --}}
 <script>
+// SHOW / HIDE PASSWORD
+function togglePassword(fieldId, btn) {
+    const input = document.getElementById(fieldId);
+
+    if (input.type === "password") {
+        input.type = "text";
+        btn.innerText = "Hide";
+    } else {
+        input.type = "password";
+        btn.innerText = "Show";
+    }
+}
+
+// PASSWORD STRENGTH
 document.getElementById("password").addEventListener("input", function () {
 
     let value = this.value;
     let strengthDiv = document.getElementById("strength");
     let strengthDetails = document.getElementById("strength-details");
 
-    // Reset segments
     for (let i = 1; i <= 4; i++) {
         document.getElementById(`segment-${i}`).className = "strength-segment";
     }
