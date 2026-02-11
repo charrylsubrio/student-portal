@@ -23,7 +23,7 @@ Route::get('/', function () {
 | AUTHENTICATED ROUTES
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'nocache'])->group(function () {
 
     // ===============================
     // STUDENT DASHBOARD
@@ -61,9 +61,7 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/admin/users/{user}', [UserController::class, 'update'])
             ->name('admin.users.update');
 
-        // ===============================
-        // DELETE USER  ← IMPORTANT
-        // ===============================
+        // DELETE USER
         Route::delete('/admin/users/{user}', [UserController::class, 'destroy'])
             ->name('admin.users.destroy');
     });
