@@ -11,13 +11,15 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
 
-    // 🔥 REGISTER CUSTOM MIDDLEWARE ALIAS HERE
+    // 🔥 REGISTER CUSTOM MIDDLEWARE ALIASES HERE
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'role' => \App\Http\Middleware\RoleMiddleware::class,
+            'nocache' => \App\Http\Middleware\NoCacheMiddleware::class, // 🔒 prevent back-button after logout
         ]);
     })
 
     ->withExceptions(function (Exceptions $exceptions): void {
         //
-    })->create();
+    })
+    ->create();
